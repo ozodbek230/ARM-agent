@@ -1,43 +1,67 @@
-# SHAHRIDDINOV NAVRO'ZBEK O'TKIRBEK O'G'LI — Bron + Navbat + Web
+# SHAHRIDDINOV NAVRO'ZBEK O'TKIRBEK O'G'LI — Backend (Ijara & Bron Domeni)
 
-**Rol:** Uydan kiradiganlar + bron tizimi seniki.
+**Rol:** Kitoblarni ijaraga berish (Borrow), qaytarish (Return), oldindan band qilish (Reservation) va navbat boshqaruvi bo'yicha backend muhandisi.
 
-## Vazifalaring
+---
 
-- [ ] Bron API (G'olib bilan kelishib, yoki o'zing `backend/routes_booking.py` da):
-  - `POST /reserve` — body: user_id, book_id. Band kitobga navbatga yozadi
-  - `GET /reservations/{user_id}` — mening bronlarim
-  - `DELETE /reservations/{id}` — bronni bekor qilish
-- [ ] Qoida: bitta kitobga 3 kishidan ko'p navbat bo'lmasin
-- [ ] Kitob bo'shaganda birinchi navbatdagiga "olib ketishingiz mumkin" statusi
-- [ ] Web sahifa `frontend/web/index.html`:
-  - Login sahifasi (Ozodbekning `/auth/login` ga ulanadi)
-  - "Bron qilish" tugmasi (kioskda yo'q, faqat webda)
-  - "Mening kitoblarim" sahifasi: olgan + bron qilganlar, qaytarish muddati
-- [ ] Muddat eslatma: qaytarishga 2 kun qolganda sariq, o'tib ketsa qizil yozuv
+## 🎯 Asosiy Mas'uliyatlar
 
-## Texnik talab
+- [ ] **Modellar (`backend/app/models/borrow.py`):**
+  - `Borrow` modeli:
+    - `id`: Integer (PK)
+    - `user_id`: Integer (FK -> users.id)
+    - `book_id`: Integer (FK -> books.id)
+    - `borrow_date`: DateTime (olingan vaqt)
+    - `due_date`: DateTime (qaytarish oxirgi muddati, odatda +14 kun)
+    - `returned_date`: Optional[DateTime]
+    - `status`: String ("active", "returned", "overdue")
+  - `Reservation` modeli:
+    - `id`: Integer (PK)
+    - `user_id`: Integer (FK -> users.id)
+    - `book_id`: Integer (FK -> books.id)
+    - `reserved_at`: DateTime
+    - `queue_position`: Integer (navbatdagi o'rni, 1, 2, 3)
+    - `status`: String ("waiting", "notified", "cancelled", "completed")
+- [ ] **Sxemalar (`backend/app/schemas/borrow.py`):**
+  - `BorrowCreate`, `BorrowResponse`, `ReturnRequest`
+  - `ReservationCreate`, `ReservationResponse`
+- [ ] **Repository (`backend/app/repositories/borrow_repo.py`):**
+  - `create_borrow(db, user_id, book_id, days=14)`
+  - `mark_as_returned(db, borrow_id)`
+  - `create_reservation(db, user_id, book_id)`
+  - `get_user_active_borrows(db, user_id)`
+  - `get_book_queue(db, book_id)`
+- [ ] **Xizmat qatlami (`backend/app/services/borrow_service.py`):**
+  - Kitob band bo'lsa, uni ijaraga berishni bloklash (400 Bad Request).
+  - Bitta kitob uchun maksimal 3 kishilik navbat chegarasi (agar navbat >= 3 bo'lsa, xato qaytarish).
+  - Kitob qaytarilganda, agar navbatda odam bo'lsa, 1-o'rindagi bron statusini "notified" ga o'tkazish; agar navbat bo'lmasa kitob holatini "available" qilish.
+  - Foydalanuvchining muddati o'tib ketgan kitoblarini aniqlash (overdue).
+- [ ] **API Endpointlari (`backend/app/api/v1/borrows.py`):**
+  - `POST /api/v1/borrows` — kitob olish (avtorizatsiyadan o'tgan foydalanuvchi)
+  - `POST /api/v1/borrows/return` — kitob qaytarish
+  - `GET /api/v1/borrows/my` — mening kitoblarim (joriy foydalanuvchi uchun)
+  - `POST /api/v1/reservations` — band kitobga navbatga yozilish
+  - `DELETE /api/v1/reservations/{id}` — bronni bekor qilish
 
-- Login bo'lmasa bron qilib bo'lmaydi (token tekshir)
-- Bir odam bitta kitobni 2 marta bron qilolmaydi (UNIQUE tekshiruvi)
-- Sana formati: `YYYY-MM-DD` (masalan 2026-09-28)
+---
 
-## Bog'liqlik
+## 🔗 Jamoaga Bog'liqlik
 
-- Ozodbek: `/auth/login`, users jadvali
-- G'olib: `/borrow`, `/return`, books holati
-- Ozod: kioskda "bron uydan qilinadi" degan yozuv chiqarishi uchun senga havola beradi
+- **Ozodbek:** Senga `User` modelini va `get_current_user` autentifikatsiya dependency'sini beradi.
+- **G'olib:** Senga `Book` modelini beradi (ijara paytida kitob statusi o'zgaradi).
+- **Ozod:** Sening API'laringni Veb interfeysidagi shaxsiy kabinetga ulaydi.
 
-## Qabul mezoni
+---
 
-- Band kitobga bron qo'ysa navbatga tushadi
-- 4-chi odamga "navbat to'la" xatosi chiqadi
-- Login-siz kirsa bron tugmasi ishlamaydi
+## ✅ Qabul Mezonlari (Definition of Done)
 
-## Branch
+- Bo'sh kitob ijaraga olinganda kitob holati avtomatik "borrowed" ga aylanadi.
+- Band kitob olinmoqchi bo'lsa ruxsat bermaydi, faqat navbatga yozilish imkoni bo'ladi.
+- 4-chi odam bron qilmoqchi bo'lsa "Navbat to'lgan" xatosi chiqadi.
+- Qaytarish sanasi o'tib ketgan kitoblar "overdue" sifatida belgilanadi.
+
+---
+
+## 🌿 Ishchi Branch
 
 `navrozbek/booking`
-
-## Birinchi qadam
-
-Avval `reservations` jadvalini Ozodbekdan so'ra, keyin postman yoki curl bilan `POST /reserve` ni testla, oxirida web sahifa qil.

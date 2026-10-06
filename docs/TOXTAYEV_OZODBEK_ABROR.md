@@ -1,49 +1,48 @@
-# TO'XTAYEV OZODBEK ABROR O'G'LI — Team Lead / Baza / Auth / Git
+# TO'XTAYEV OZODBEK ABROR O'G'LI — Team Lead & Core Arxitektor
 
-**Rol:** Loyiha kapitani. Zamin yaratib berasan, boshqalarga yo'l ochasan.
+**Rol:** Loyiha arxitektori va yetakchisi. Tizim yadrosi, xavfsizlik, baza poydevori va jamoa kodini nazorat qilish.
 
-## Vazifalaring
+---
 
-- [ ] GitHub repo ochish, `README.md`, `.gitignore` (python, sqlite) qo'shish
-- [ ] SQLite baza yaratish: `backend/db.sqlite3`
-- [ ] 3 ta jadval:
-```sql
-users(id INTEGER PRIMARY KEY, full_name TEXT, login TEXT UNIQUE, password_hash TEXT, role TEXT);
--- role: admin, kutubxonachi, talaba, mehmon
-books(id INTEGER PRIMARY KEY, nom TEXT, muallif TEXT, janr TEXT, yil INTEGER, javon TEXT, holat TEXT);
--- holat: bosh, band
-borrows(id INTEGER PRIMARY KEY, user_id INTEGER, book_id INTEGER, olingan_sana TEXT, qaytarish_sana TEXT, status TEXT);
-reservations(id INTEGER PRIMARY KEY, user_id INTEGER, book_id INTEGER, sana TEXT, status TEXT);
-```
-- [ ] Test ma'lumot: 10 ta kitob, 2 ta user (admin/admin123, talaba/1234) qo'shish
-- [ ] Auth API:
-  - `POST /auth/register` — login, parol, ism
-  - `POST /auth/login` — token qaytaradi (boshida oddiy, keyin JWT)
-  - `GET /auth/me` — kim kirganini tekshirish
-- [ ] Parolni `hashlib.sha256` bilan saqlash (ochiq saqlama!)
-- [ ] Rollarga ruxsat: faqat admin kitob qo'sha oladi, mehmon faqat qidira oladi
-- [ ] Boshqalarning branchlarini `main` ga merge qilish
+## 🎯 Asosiy Mas'uliyatlar
 
-## Boshqalarga bog'liqlik
+- [ ] Loyiha skeletini, `.gitignore`, `requirements.txt` va `.env.example` sozlamalarini tasdiqlash
+- [ ] **Core qatlami (`backend/app/core/`):**
+  - `config.py` — Pydantic Settings orqali konfiguratsiya boshqaruvi
+  - `security.py` — Parollarni bcrypt orqali xeshlash, JWT token yaratish va dekodlash
+  - `dependencies.py` — FastAPI Dependency Injection: `get_db()`, `get_current_user()`, `check_role(["admin", "librarian"])`
+  - `exceptions.py` — Tizim bo'yicha yagona xatoliklar (Custom HTTP Exceptions)
+- [ ] **Baza poydevori (`backend/app/db/`):**
+  - `session.py` — SQLAlchemy `AsyncSession` va engine yaratish
+  - `base.py` — Barcha SQLAlchemy modellarni ro'yxatdan o'tkazish va jadvallarni avtomatik yaratish (`init_db`)
+  - `seed.py` — Dastlabki 10 ta kitob va 2 ta foydalanuvchi (admin va talaba) ni bazaga kiritish
+- [ ] **Foydalanuvchi va Auth domeni:**
+  - `models/user.py` — `User` modeli (`id`, `full_name`, `login`, `password_hash`, `role`, `created_at`)
+  - `schemas/user.py`, `schemas/auth.py` — `UserCreate`, `UserResponse`, `Token`, `LoginRequest`
+  - `repositories/user_repo.py` — Foydalanuvchini bazadan qidirish va saqlash
+  - `services/auth_service.py` — Ro'yxatdan o'tish va autentifikatsiya biznes mantiqi
+  - `api/v1/auth.py` — `/auth/register`, `/auth/login`, `/auth/me` endpointlari
+- [ ] **Git & Code Review:**
+  - Jamoa a'zolarining pull requestlarini tekshirish va `main` branchga merge qilish
 
-Sen zaminni bersang bo'ldi:
-- G'olib senga qarab API yozadi
-- Sarvarbek, Azimbek, Ozod, Navro'zbek sening `/books` va `/auth` endpointlaringga ulanadi
+---
 
-## Qabul mezoni
+## 🔗 Jamoaga Bog'liqlik
 
-- `python backend/app.py` yonganda `http://127.0.0.1:8000/docs` ochiladi
-- admin/admin123 bilan login bo'ladi
-- `GET /books` bo'sh bo'lmasa ham 10 ta kitob qaytaradi
+- **G'olib va Navro'zbek:** Sening `session.py` va `Base` modelingga qarab o'z modellarini yozadi.
+- **Azimbek va Ozod:** Sening `/auth/login` va JWT tokening orqali tizimga ulanadi.
 
-## Branch
+---
+
+## ✅ Qabul Mezonlari (Definition of Done)
+
+- `uvicorn backend.app.main:app --reload` yurganda xatoliksiz ishga tushadi.
+- `http://127.0.0.1:8000/docs` da Swagger UI to'liq ochiladi.
+- `/api/v1/auth/login` orqali admin (admin / admin123) login qilganda JWT token qaytadi.
+- `/api/v1/auth/me` orqali joriy foydalanuvchi ma'lumotlari to'g'ri olinadi.
+
+---
+
+## 🌿 Ishchi Branch
 
 `ozodbek/core-auth`
-
-## Birinchi qadam
-
-```bash
-pip install fastapi uvicorn
-mkdir backend
-# backend/app.py + backend/db.py yarat, jadvallarni ishga tushir
-```

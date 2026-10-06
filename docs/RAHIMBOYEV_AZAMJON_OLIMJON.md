@@ -1,42 +1,50 @@
-# RAHIMBOYEV A'ZAMJON OLIMJON O'G'LI — Hisobotchi
+# RAHIMBOYEV A'ZAMJON OLIMJON O'G'LI — QA & Texnik Hujjatlashtirish
 
-**Rol:** Kod yozmaysan. Lekin sensiz loyiha himoya qilinmaydi. Hamma qilgan ishni qog'ozga tushirasan.
+**Rol:** Tizim sifatini nazorat qilish (QA), API testlari, loyihaning to'liq texnik hujjatlari va himoya taqdimoti bo'yicha mas'ul muhandis.
 
-## Vazifalaring
+---
 
-- [ ] Har hafta har kimdan 3 gaplik hisobot yig'ish (telegramda so'raysan):
-  - nima qildi? nima qolmadi? nima kerak?
-- [ ] Yakuniy hisobot struktura (15-20 bet):
-  1. Kirish: muammo (kutubxonada navbat, kitob topish qiyin)
-  2. Maqsad: kiosk + web yordamchi agent
-  3. Tahlil: qanday ishlaydi (sxema chizish)
-  4. Har bir a'zo nima qildi (6 bo'lim, ismlar bilan)
-  5. Baza sxemasi (Ozodbekdan so'rab rasmga ol)
-  6. API ro'yxati (G'olibdan so'rab jadval qil)
-  7. Skrinshotlar (Ozod va Navro'zbekdan so'ra: kiosk ekran, web ekran)
-  8. Xulosa: nima o'rganildi, kelajakda nima qo'shiladi (QR, LLM)
-- [ ] Prezentatsiya (10 slayd): muammo -> yechim -> demo video -> jamoa
-- [ ] Demo ssenariy yozish: himoyada 3 daqiqada ko'rsatiladigan qadamlar
+## 🎯 Asosiy Mas'uliyatlar
 
-## Kimdan nima so'rashing
+- [ ] **API va Tizim Testlari (`backend/tests/`):**
+  - Pytest va HTTPX yordamida asosiy test senariylarini yozish / tekshirish:
+    - `test_auth.py` — ro'yxatdan o'tish, noto'g'ri parol, token olish.
+    - `test_books.py` — kitob qo'shish, qidirish, admin ruxsati tekshiruvi.
+    - Ijara va navbat testlari — band kitobni qayta ololmaslik, navbat chegarasi.
+- [ ] **Swagger / OpenAPI nazorati:**
+  - `http://127.0.0.1:8000/docs` manzilidagi barcha endpointlarning to'g'ri tavsiflangani, parametrlar va xatolik kodlari mavjudligini audit qilish.
+- [ ] **Texnik Loyiha Hujjati (15-20 bet):**
+  1. **Kirish:** Kutubxonadagi navbat va qidiruv muammolari, tizim maqsadi.
+  2. **Tizim Arxitekturasi:** Qatlamli arxitektura chizmasi (Clean Architecture), modullar bog'liqligi.
+  3. **Ma'lumotlar Bazasi Modeli:** ERD sxemasi (`users`, `books`, `borrows`, `reservations`).
+  4. **API Spetsifikatsiyasi:** Endpointlar, parametrlar va qaytuvchi JSON javoblar jadvali.
+  5. **Jamoa a'zolari hisoboti:** Har bir a'zo bajargan ishlar va ularning hissalari.
+  6. **Sinov va Natijalar:** Test natijalari, Kiosk va Veb interfeyslarining skrinshotlari.
+  7. **Xulosa va Rivojlantirish:** Tizimning kelajakdagi imkoniyatlari (RFID, to'liq LLM, telegram bot).
+- [ ] **Loyiha Taqdimoti (Prezentatsiya - 10-12 slayd):**
+  - Muammo -> Arxitektura va Yechim -> Jonli Demo ssenariysi -> Jamoa.
+- [ ] **Demo Ssenariy:**
+  - Loyihani himoya qilish vaqtida 3-5 daqiqada ko'rsatiladigan qat'iy qadamlar ketma-ketligini tayyorlash.
 
-- Ozodbek: baza sxemasi + git log
-- G'olib: API ro'yxati
-- Sarvarbek: qidiruv misoli (video yoki rasm)
-- Azimbek: AI javob misoli
-- Ozod: kiosk fotoskrin
-- Navro'zbek: bron misoli
+---
 
-## Qabul mezoni
+## 🔗 Jamoaga Bog'liqlik
 
-- Hisobotda 7 kishining ismi to'g'ri yozilgan
-- Har bir modulda muallif ko'rsatilgan
-- Kamida 5 ta skrinshot bor
+- **Ozodbek:** Arxitektura sxemasi, baza ERD chizmasi va Git hisobotlari.
+- **G'olib, Sarvarbek, Navro'zbek:** API endpointlari va xatolik javoblari.
+- **Azimbek:** AI agentning test javoblari.
+- **Ozod:** Kiosk va Veb interfeyslarining fotosuratlari va skrinshotlari.
 
-## Branch shart emas
+---
 
-Word da yozaverasan, oxirida PDF qilib guruhga tashlaysan.
+## ✅ Qabul Mezonlari (Definition of Done)
 
-## Birinchi qadam
+- `pytest` buyrug'i barcha testlarni yashil (PASS) qilib o'tkazishi.
+- Yakuniy hisobot hujjati to'liq rasmiylashtirilgan, barcha jamoa a'zolari qismlari kiritilgan bo'lishi.
+- Jonli ko'rsatuv (Live demo) uchun ssenariy tayyor bo'lishi.
 
-Bugun guruhga yoz: "Har juma 18:00 da menga 3 qator hisobot tashlanglar", keyin shu faylni nusxalab boshlagin.
+---
+
+## 🌿 Ishchi Branch
+
+`azamjon/qa-docs`
