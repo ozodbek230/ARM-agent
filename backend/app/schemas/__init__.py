@@ -2,6 +2,13 @@
 from backend.app.schemas.auth import LoginRequest, RefreshRequest, TokenData, TokenResponse
 from backend.app.schemas.common import ErrorResponse, MessageResponse, PaginationParams
 from backend.app.schemas.user import UserBase, UserCreate, UserResponse, UserUpdate
+from backend.app.schemas.book import (
+    BookBase,
+    BookCreate,
+    BookUpdate,
+    BookResponse,
+    BookListResponse,
+)
 
 __all__ = [
     "PaginationParams",
@@ -15,4 +22,9 @@ __all__ = [
     "TokenResponse",
     "RefreshRequest",
     "TokenData",
+    "BookBase",
+    "BookCreate",
+    "BookUpdate",
+    "BookResponse",
+    "BookListResponse",
 ]

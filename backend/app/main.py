@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.v1.router import api_router
 from backend.app.core.config import settings
-from backend.app.db.seed import seed_admin
+from backend.app.db.seed import seed_admin, seed_books
 from backend.app.db.session import create_tables
 
 
@@ -16,6 +16,8 @@ async def lifespan(app: FastAPI):
     await create_tables()
     # 2. Dastlabki admin hisobini kiritish (idempotent)
     await seed_admin()
+    # 3. Dastlabki kitoblarni kiritish (idempotent)
+    await seed_books()
     yield
 
 
