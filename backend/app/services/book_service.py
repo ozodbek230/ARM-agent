@@ -4,7 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.core.exceptions import NotFoundError
 from backend.app.models.book import Book
 from backend.app.repositories.book_repo import BookRepository, book_repo
-from backend.app.schemas.book import BookCreate, BookListResponse, BookUpdate
+from backend.app.schemas.book import (
+    BookCreate,
+    BookFilterParams,
+    BookListResponse,
+    BookSearchResultResponse,
+    BookUpdate,
+)
 
 
 class BookService:
@@ -43,6 +49,33 @@ class BookService:
         """Kitobni o'chirish."""
         book = await self.get_book_by_id(db, book_id)
         await self.repo.delete(db, book)
+
+    async def search_books(
+        self, db: AsyncSession, filters: BookFilterParams
+    ) -> BookSearchResultResponse:
+        """Kitoblarni qidirish va natijalarni AI tavsiyalari bilan boyitish."""
+        items, total = await self.repo.search_and_filter(db, filters)
+        ask_ai = False
+        suggestions = []
+
+        # Agar qidiruv bo'yicha hech narsa topilmasa va qidiruv so'rovi bo'lsa:
+        if total == 0 and (filters.query or filters.genre or filters.author):
+            ask_ai = True
+            all_genres = await self.repo.get_all_genres(db)
+            suggestions = [f"Mavjud janr: {g}" for g in all_genres[:4]]
+
+        return BookSearchResultResponse(
+            items=items,
+            total=total,
+            skip=filters.skip,
+            limit=filters.limit,
+            ask_ai=ask_ai,
+            suggestions=suggestions,
+        )
+
+    async def get_genres(self, db: AsyncSession) -> list[str]:
+        """Mavjud barcha janrlarni olish."""
+        return await self.repo.get_all_genres(db)
 
 
 book_service = BookService()

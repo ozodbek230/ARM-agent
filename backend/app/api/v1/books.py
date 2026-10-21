@@ -7,8 +7,10 @@ from backend.app.core.dependencies import check_role, get_current_admin, get_db
 from backend.app.models.user import User
 from backend.app.schemas.book import (
     BookCreate,
+    BookFilterParams,
     BookListResponse,
     BookResponse,
+    BookSearchResultResponse,
     BookUpdate,
 )
 from backend.app.schemas.common import MessageResponse
@@ -30,6 +32,33 @@ async def get_books(
 ) -> BookListResponse:
     """Kitoblar ro'yxatini pagination bilan qaytarish."""
     return await book_service.get_books(db, skip=skip, limit=limit)
+
+
+@router.get(
+    "/search",
+    response_model=BookSearchResultResponse,
+    summary="Kitoblarni qidirish va filtrlash",
+    description="Nom, muallif, janr, holat va nashr yili bo'yicha qidiruv. Bo'sh natijada AI tavsiya beradi.",
+)
+async def search_books(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    filters: Annotated[BookFilterParams, Depends()],
+) -> BookSearchResultResponse:
+    """Kitoblarni ko'p parametrli qidirish va filtrlash."""
+    return await book_service.search_books(db, filters)
+
+
+@router.get(
+    "/genres",
+    response_model=list[str],
+    summary="Barcha mavjud janrlar ro'yxatini olish",
+    description="Kutubxonadagi mavjud unikal janrlar ro'yxatini qaytaradi (Frontend filtrlari uchun).",
+)
+async def get_genres(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[str]:
+    """Mavjud janrlar ro'yxatini qaytarish."""
+    return await book_service.get_genres(db)
 
 
 @router.get(

@@ -40,3 +40,25 @@ class BookListResponse(BaseModel):
     total: int
     skip: int
     limit: int
+
+
+class BookFilterParams(BaseModel):
+    query: str | None = Field(default=None, description="Kitob nomi yoki muallif bo'yicha qidiruv")
+    genre: str | None = Field(default=None, description="Janr bo'yicha filtr")
+    author: str | None = Field(default=None, description="Muallif ismi bo'yicha filtr")
+    status: str | None = Field(default=None, description="Kitob holati: available, borrowed, reserved")
+    year_from: int | None = Field(default=None, ge=0, le=2100, description="Nashr yilining quyi chegarasi")
+    year_to: int | None = Field(default=None, ge=0, le=2100, description="Nashr yilining yuqori chegarasi")
+    sort_by: str = Field(default="id", description="Saralash maydoni: id, title, year, created_at")
+    order: str = Field(default="desc", description="Saralash tartibi: asc yoki desc")
+    skip: int = Field(default=0, ge=0, description="O'tkazib yuboriladigan yozuvlar soni")
+    limit: int = Field(default=20, ge=1, le=100, description="Qaytariladigan maksimal yozuvlar soni")
+
+
+class BookSearchResultResponse(BaseModel):
+    items: list[BookResponse]
+    total: int
+    skip: int
+    limit: int
+    ask_ai: bool = Field(default=False, description="Kitob topilmaganda AI Agentiga yo'naltirish bayrog'i")
+    suggestions: list[str] = Field(default_factory=list, description="Foydalanuvchiga tavsiyalar ro'yxati")

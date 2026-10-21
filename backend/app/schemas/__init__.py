@@ -8,6 +8,8 @@ from backend.app.schemas.book import (
     BookUpdate,
     BookResponse,
     BookListResponse,
+    BookFilterParams,
+    BookSearchResultResponse,
 )
 
 __all__ = [
@@ -27,4 +29,6 @@ __all__ = [
     "BookUpdate",
     "BookResponse",
     "BookListResponse",
+    "BookFilterParams",
+    "BookSearchResultResponse",
 ]
