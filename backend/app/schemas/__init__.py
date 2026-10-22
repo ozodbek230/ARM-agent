@@ -11,6 +11,15 @@ from backend.app.schemas.book import (
     BookFilterParams,
     BookSearchResultResponse,
 )
+from backend.app.schemas.borrow import (
+    BorrowCreate,
+    BorrowResponse,
+    BorrowListResponse,
+    ReturnRequest,
+    ReservationCreate,
+    ReservationResponse,
+    ReservationListResponse,
+)
 
 __all__ = [
     "PaginationParams",
@@ -31,4 +40,11 @@ __all__ = [
     "BookListResponse",
     "BookFilterParams",
     "BookSearchResultResponse",
+    "BorrowCreate",
+    "BorrowResponse",
+    "BorrowListResponse",
+    "ReturnRequest",
+    "ReservationCreate",
+    "ReservationResponse",
+    "ReservationListResponse",
 ]
